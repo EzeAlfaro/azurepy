@@ -20,7 +20,7 @@ db = firestore.client()
 def health_check():
     return jsonify({
         "status": "OK",
-        "message": "El servidor esta funcionando correctamente",  # Sin acentos
+        "message": "El servidor está funcionando correctamente",
         "endpoints": {
             "kmeans": "/api/predict/rotation",
             "regresion": "/api/predict/performance"
@@ -37,11 +37,11 @@ def run_script(script_path):
             text=True,
             check=True
         )
-        return json.loads(result.stdout)
+        return json.loads(result.stdout)  # Se espera que el script devuelva un JSON
     except subprocess.CalledProcessError as e:
         raise Exception(f"Error en el script: {e.stderr}")
     except json.JSONDecodeError:
-        raise Exception("El script no devolvio un JSON valido")  # Sin acentos
+        raise Exception("El script no devolvió un JSON válido")
 
 # --- Ruta K-Means ---
 @app.route('/api/predict/rotation', methods=['POST'])
@@ -50,25 +50,27 @@ def predict_rotation():
         token = request.headers.get('Authorization', '').split(" ")[1]
         auth.verify_id_token(token)
     except Exception as e:
-        return jsonify({"error": f"Error de autenticacion: {str(e)}"}), 401  # Sin acentos
+        return jsonify({"error": f"Error de autenticación: {str(e)}"}), 401  # Sin acentos
 
     try:
+        # Ruta del script de K-Means
         script_path = os.path.join(os.path.dirname(__file__), "kmeans", "K-Means-Rotacion.py")
         output = run_script(script_path)
         return jsonify(output), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# --- Ruta Regresion ---
+# --- Ruta Regresión ---
 @app.route('/api/predict/performance', methods=['POST'])
 def predict_performance():
     try:
         token = request.headers.get('Authorization', '').split(" ")[1]
         auth.verify_id_token(token)
     except Exception as e:
-        return jsonify({"error": f"Error de autenticacion: {str(e)}"}), 401  # Sin acentos
+        return jsonify({"error": f"Error de autenticación: {str(e)}"}), 401  # Sin acentos
 
     try:
+        # Ruta del script de Regresión
         script_path = os.path.join(os.path.dirname(__file__), "regresion", "regresion.py")
         output = run_script(script_path)
         return jsonify(output), 200
