@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>API Test</title>
+</head>
+<body>
+ <h1>Test API</h1>
+ <form id="prediction-form">
+ <label for="nombre">Nombre:</label><br>
+ <input type="text" id="nombre" name="nombre" value="Empleado Prueba"><br>
+
+
+ <label for="ausencias">Ausencias Injustificadas:</label><br>
+ <input type="number" id="ausencias" name="ausencias" value="2"><br>
+
+
+ <label for="llegadas_tarde">Llegadas Tarde:</label><br>
+ <input type="number" id="llegadas_tarde" name="llegadas_tarde" value="3"><br>
+
+
+ <label for="salidas_tempranas">Salidas Tempranas:</label><br>
+ <input type="number" id="salidas_tempranas" name="salidas_tempranas" value="1"><br>
+
+
+ <label for="ciclo">Ciclo:</label><br>
+ <input type="number" id="ciclo" name="ciclo" value="1"><br>
+
+
+ <button type="submit">Predecir Rotación</button>
+ </form>
+ <div id="result"></div>
+
+
+ <script>
+ const form = document.getElementById('prediction-form');
+ const resultDiv = document.getElementById('result');
+
+
+ form.addEventListener('submit', async (event) => {
+ event.preventDefault();
+
+
+ const formData = new FormData(form);
+ const data = Object.fromEntries(formData.entries());
+
+
+ try {
+ const response = await fetch('/api/predict/rotation', {  // Relative URL
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json'
+ },
+ body: JSON.stringify(data)
+ });
+
+
+ if (!response.ok) {
+ throw new Error(`HTTP error! status: ${response.status}`);
+ }
+
+
+ const result = await response.json();
+ resultDiv.innerHTML = `<p><b>Predicción:</b> ${result.data[0]["Probabilidad de Rotacion"]}</p>`;
+ } catch (error) {
+ console.error('Error:', error);
+ resultDiv.textContent = 'Error al obtener la predicción.';
+ }
+ });
+ </script>
+</body>
+</html>
