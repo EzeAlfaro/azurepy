@@ -1,11 +1,11 @@
 from flask import Flask, request, jsonify, send_file
- from flask_cors import CORS
- import firebase_admin
- from firebase_admin import credentials, firestore, auth
- import subprocess
- import os
- import json
- import logging  # Importa la biblioteca logging
+from flask_cors import CORS
+import firebase_admin
+from firebase_admin import credentials, firestore, auth
+import subprocess
+import os
+import json
+import logging
  
 
  # Configura Flask y CORS
