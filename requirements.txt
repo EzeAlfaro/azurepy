@@ -1,0 +1,13 @@
+flask==2.0.1
+flask-cors==4.0.0
+gunicorn==21.2.0
+firebase-admin==6.0.1
+pandas==2.1.4
+numpy==1.21.2
+openpyxl==3.0.9
+python-dotenv==0.19.0
+scikit-learn==1.0.2
+joblib==1.1.0
+statsmodels==0.13.2
+matplotlib==3.5.1
+seaborn==0.11.2
