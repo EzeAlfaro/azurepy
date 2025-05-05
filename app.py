@@ -15,6 +15,15 @@ cred = credentials.Certificate(os.path.join(os.path.dirname(__file__), "firebase
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
+# --- Ruta de inicio (necesaria para evitar "Not Found" en Render) ---
+@app.route('/', methods=['GET'])
+def index():
+    return jsonify({
+        "message": "Bienvenido a la API de predicción",
+        "status": "OK",
+        "endpoints_disponibles": ["/health", "/api/predict/rotation", "/api/predict/performance"]
+    }), 200
+
 # --- Ruta de Salud ---
 @app.route('/health', methods=['GET'])
 def health_check():
@@ -50,10 +59,9 @@ def predict_rotation():
         token = request.headers.get('Authorization', '').split(" ")[1]
         auth.verify_id_token(token)
     except Exception as e:
-        return jsonify({"error": f"Error de autenticación: {str(e)}"}), 401  # Sin acentos
+        return jsonify({"error": f"Error de autenticación: {str(e)}"}), 401
 
     try:
-        # Ruta del script de K-Means
         script_path = os.path.join(os.path.dirname(__file__), "kmeans", "K-Means-Rotacion.py")
         output = run_script(script_path)
         return jsonify(output), 200
@@ -67,15 +75,15 @@ def predict_performance():
         token = request.headers.get('Authorization', '').split(" ")[1]
         auth.verify_id_token(token)
     except Exception as e:
-        return jsonify({"error": f"Error de autenticación: {str(e)}"}), 401  # Sin acentos
+        return jsonify({"error": f"Error de autenticación: {str(e)}"}), 401
 
     try:
-        # Ruta del script de Regresión
         script_path = os.path.join(os.path.dirname(__file__), "regresion", "regresion.py")
         output = run_script(script_path)
         return jsonify(output), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# --- Ejecutar la app ---
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
