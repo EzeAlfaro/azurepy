@@ -1,2 +1,2 @@
-#!/bin/bash
-gunicorn -w 4 -b 0.0.0.0:$PORT app:app
+#!/bin/sh
+gunicorn --bind=0.0.0.0 --timeout 600 app:app

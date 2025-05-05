@@ -1,12 +1,9 @@
 from flask import Flask
-from flask_cors import CORS
-
 app = Flask(__name__)
-CORS(app)
 
-@app.route("/")
-def index():
-    return "Hola desde Flask en Azure 🚀"
+@app.route('/')
+def hello():
+    return 'Hello from Flask on Azure!'
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run()
