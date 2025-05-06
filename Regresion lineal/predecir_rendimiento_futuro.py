@@ -4,10 +4,10 @@ from sklearn.preprocessing import OneHotEncoder
 import pickle
 
 # Define la ruta del archivo donde guardaste el modelo entrenado
-modelo_guardado_path = 'backend-ml/Regresion lineal/modelo_desempeño_futuro.pkl'
+modelo_guardado_path = 'Regresion lineal/modelo_desempenio_futuro.pkl'
 
 # Define la ruta del nuevo archivo CSV CON la columna 'desempeño'
-nuevo_data_filepath = 'backend-ml/Regresion lineal/DataSet_para_predecir.csv'
+nuevo_data_filepath = 'Regresion lineal/DataSet_para_predecir.csv'
 
 try:
     # Carga el modelo entrenado desde el archivo
@@ -24,7 +24,7 @@ try:
     # --- Preprocesamiento de los nuevos datos ---
    #como desempeño tiene orden logico uso codificacion manual para que el modelo entienda que alto>medio>bajo
     orden_desempeño = {'bajo': 0, 'medio': 1, 'alto': 2}
-    nuevos_df['desempeño_ordinal'] = nuevos_df['desempeño'].map(orden_desempeño)
+    nuevos_df['desempenio_ordinal'] = nuevos_df['desempenio'].map(orden_desempeño)
     #lo mismo con jerarquia
     orden_jerarquia = {'trainee': 0, 'junior': 1, 'senior': 2}
     nuevos_df['jerarquia_ordinal'] = nuevos_df['jerarquia'].map(orden_jerarquia)
@@ -35,7 +35,7 @@ try:
     area_encoded_df = pd.DataFrame(area_encoded, columns=ohe.get_feature_names_out(['area']), index=nuevos_df.index)
 
     df_final = pd.concat([nuevos_df.drop(
-        ['area', 'jerarquia', 'desempeño'], axis=1), area_encoded_df],
+        ['area', 'jerarquia', 'desempenio'], axis=1), area_encoded_df],
         axis=1)
 
     # 4. Seleccionar las columnas de características (en el mismo orden que se usaron para entrenar)

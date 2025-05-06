@@ -1,4 +1,4 @@
-nombre,area,jerarquia,puntaje,cantidad_proyectos,desempeño,personas_equipo,horas_extra,asistencia_puntualidad
+nombre,area,jerarquia,puntaje,cantidad_proyectos,desempenio,personas_equipo,horas_extra,asistencia_puntualidad
 Empleado 1,ventas,senior,23,1,bajo,10,FALSE,40
 Empleado 2,administracion,junior,72,1,bajo,8,TRUE,88
 Empleado 3,ventas,senior,91,2,alto,3,FALSE,95

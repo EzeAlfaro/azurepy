@@ -9,11 +9,11 @@ import os
 import logging
 
 # Configuración de Logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+#logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Rutas relativas
 ruta_entrenamiento = os.path.join(os.path.dirname(__file__), "DataSet_entrenamiento.csv")
-ruta_modelo = os.path.join(os.path.dirname(__file__), "modelo_desempeno_futuro.pkl")  # Sin acento
+ruta_modelo = os.path.join(os.path.dirname(__file__), "modelo_desempenio_futuro.pkl")  # Sin acento
 
 logging.info(f"Intentando cargar dataset desde: {ruta_entrenamiento}")  # Log
 
@@ -22,7 +22,7 @@ try:
 
     # --- Código original de Santi (sin caracteres especiales) ---
     orden_desempeno = {'bajo': 0, 'medio': 1, 'alto': 2}  # Sin acento
-    df['desempeno_ordinal'] = df['desempeno'].map(orden_desempeno)
+    df['desempenio_ordinal'] = df['desempenio'].map(orden_desempeno)
 
     orden_jerarquia = {'trainee': 0, 'junior': 1, 'senior': 2}
     df['jerarquia_ordinal'] = df['jerarquia'].map(orden_jerarquia)
@@ -33,10 +33,10 @@ try:
     area_encoded = ohe.fit_transform(df[['area']])
     area_encoded_df = pd.DataFrame(area_encoded, columns=ohe.get_feature_names_out(['area']), index=df.index)
 
-    df_final = pd.concat([df.drop(['area', 'jerarquia', 'desempeno'], axis=1), area_encoded_df], axis=1)
+    df_final = pd.concat([df.drop(['area', 'jerarquia', 'desempenio'], axis=1), area_encoded_df], axis=1)
 
-    x = df_final.drop(['nombre', 'desempeno_futuro'], axis=1)
-    y = df_final['desempeno_futuro']
+    x = df_final.drop(['nombre', 'desempenio_futuro'], axis=1)
+    y = df_final['desempenio_futuro']
 
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=1)
     model = LinearRegression()
