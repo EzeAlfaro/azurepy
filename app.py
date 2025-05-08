@@ -39,7 +39,7 @@ def health_check():
         "message": "El servidor está funcionando correctamente",
         "endpoints": {
             "kmeans": "/api/predict/rotation",
-            "regresion": "/api/predict/performance",
+            "entrenar_regresion": "/api/predict/performance_train",
             "future_performance": "/api/predict/future_performance" #agrego el nuevo endpoint al diccionario
         }
     }), 200
@@ -83,7 +83,7 @@ def predict_rotation():
         return jsonify({"error": str(e)}), 500
 
 # --- Ruta Regresión ---
-@app.route('/api/predict/performance', methods=['POST'])
+@app.route('/api/predict/performance_train', methods=['POST'])
 def predict_performance():
     if ENABLE_AUTH:
         try:
@@ -95,10 +95,33 @@ def predict_performance():
         logging.info("Autenticación deshabilitada para /api/predict/performance")
 
     try:
+        # Verifica si se envió un archivo CSV
+        if 'file' not in request.files:
+            return jsonify({"error": "No se proporcionó ningún archivo CSV"}), 400
+        archivo_csv = request.files['file']
+         # Verifica si el archivo tiene un nombre y es un CSV
+        if archivo_csv.filename == '' or not archivo_csv.filename.endswith('.csv'):
+            return jsonify({"error": "Por favor, sube un archivo CSV válido"}), 400
+        # Guarda el archivo CSV temporalmente
+        archivo_temporal_path = os.path.join(os.path.dirname(__file__), 'temp.csv')
+        archivo_csv.save(archivo_temporal_path)
+        
         script_path = os.path.join(os.path.dirname(__file__), "Regresion lineal", "regresion.py")
-        output = run_script(script_path)
+        output = run_script(script_path, archivo_temporal_path)
+
+        # Si la salida del script es una cadena, conviértela a un objeto JSON
+        if isinstance(output, str):
+            try:
+                output = json.loads(output)
+            except json.JSONDecodeError:
+                # Si no se puede convertir a JSON, devuelve un mensaje de error
+                return jsonify({"error": "El script no devolvió un JSON válido: " + output}), 500
+        # Elimina el archivo temporal
+        os.remove(archivo_temporal_path)
         return jsonify(output), 200
     except Exception as e:
+        # Registra el error para ayudar a depurar
+        logging.error(f"Error al predecir el rendimiento futuro: {e}")
         return jsonify({"error": str(e)}), 500
 
 # --- Ruta para predecir el rendimiento futuro ---
