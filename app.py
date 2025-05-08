@@ -28,7 +28,7 @@ def index():
     return jsonify({
         "message": "Bienvenido a la API de predicción",
         "status": "OK",
-        "endpoints_disponibles": ["/health", "/api/predict/rotation", "/api/predict/performance", "/test", "/api/predict/future_performance"]
+        "endpoints_disponibles": ["/health", "/api/predict/rotation", "/api/predict/performance_train", "/test", "/api/predict/future_performance"]
     }), 200
 
 # --- Ruta de Salud ---
