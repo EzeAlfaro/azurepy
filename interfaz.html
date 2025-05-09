@@ -180,7 +180,7 @@
             const formData = new FormData();
             formData.append('file', new Blob([csvDataEntrenamiento]), 'entrenamiento.csv'); // Enviar como Blob
 
-            fetch('http://127.0.0.1:5000/api/predict/performance_train', {  // Usando la URL proporcionada
+            fetch('https://azurepy.onrender.com/api/predict/performance_train', {  // Usando la URL proporcionada
                 method: 'POST',
                 body: formData,
             })
@@ -228,7 +228,7 @@
             const formData = new FormData();
             formData.append('file', new Blob([csvDataPrediccion]), 'prediction.csv'); // Enviar como Blob
 
-            fetch('http://127.0.0.1:5000/api/predict/future_performance', {  // Usando la URL de la API
+            fetch('https://azurepy.onrender.com/api/predict/future_performance', {  // Usando la URL de la API
                 method: 'POST',
                 body: formData,
             })
