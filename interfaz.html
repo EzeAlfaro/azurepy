@@ -5,78 +5,152 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interfaz de Ainabi</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
         .titulo-descripcion {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .titulo-descripcion h1 {
+            color: #0056b3;
+            margin-bottom: 10px;
+        }
+
+        .titulo-descripcion h2 {
+            color: #555;
+            font-size: 1.2em;
         }
 
         .funcionalidades {
-            margin-top: 20px;
+            display: grid;
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .regresion-lineal, .kmeans {
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        .regresion-lineal, .kmeans, .metabase-chart {
+            background-color: #fff;
+            padding: 25px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .regresion-lineal h2, .kmeans h2, .metabase-chart h2 {
+            color: #007bff;
+            margin-top: 0;
             margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
         }
 
-        .contenedor-entrenamiento, .contenedor-prediccion, .contenedor-kmeans {
-            margin-bottom: 10px;
+        .contenedor-entrenamiento, .contenedor-prediccion, .contenedor-kmeans, .contenedor-grafico {
+            margin-bottom: 15px;
         }
 
         .texto-entrenamiento, .texto-prediccion, .texto-kmeans {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            color: #666;
         }
 
         .contenedor-botones {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap; /* Permite que los botones se envuelvan en pantallas pequeñas */
         }
 
-        .boton-subir-csv-entrenamiento, .boton-entrenar-regresion,  .boton-cargar-csv-prediccion, .boton-predecir, .boton-aplicar-kmeans {
-            padding: 10px 15px;
+        .boton-subir-csv-entrenamiento, .boton-entrenar-regresion,
+        .boton-cargar-csv-prediccion, .boton-predecir,
+        .boton-subir-csv-kmeans, .boton-aplicar-kmeans {
+            padding: 12px 20px;
             border: none;
             border-radius: 5px;
-            background-color: #4CAF50;
+            background-color: #28a745;
             color: white;
             cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
         }
 
-        .boton-subir-csv-entrenamiento:hover, .boton-entrenar-regresion:hover,  .boton-cargar-csv-prediccion:hover, .boton-predecir:hover, .boton-aplicar-kmeans:hover{
-            background-color: #367c39;
+        .boton-subir-csv-entrenamiento:hover, .boton-entrenar-regresion:hover,
+        .boton-cargar-csv-prediccion:hover, .boton-predecir:hover,
+        .boton-subir-csv-kmeans:hover, .boton-aplicar-kmeans:hover {
+            background-color: #218838;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         th, td {
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
             text-align: left;
-            border: 1px solid #ddd; /* Agregando bordes a las celdas */
         }
 
         th {
-            background-color: #f0f0f0;
+            background-color: #f8f9fa;
+            color: #495057;
+            font-weight: bold;
+        }
+
+        table tr:nth-child(odd) {
+            background-color: #fdfdfd;
+        }
+        table tr:nth-child(even) {
+            background-color: #f2f2f2;
         }
 
         #resultados-prediccion {
             margin-top: 20px;
             font-weight: bold;
-            color: #218838;
+            color: #1a712e;
+            padding: 10px;
+            background-color: #d4edda;
+            border-radius: 5px;
+            display: none; /* Se mostrará con JavaScript */
         }
 
-       /* Estilos para el color de las filas */
-        table tr:nth-child(odd) {
-            background-color: #fff; /* Blanco para filas impares */
+        /* Estilos para el iframe de Metabase */
+        .contenedor-grafico iframe {
+            display: block; /* Asegura que el iframe se comporte como un bloque para aplicar márgenes */
+            margin: 0 auto; /* Centra el iframe horizontalmente */
+            max-width: 100%; /* Asegura que el iframe no se desborde en pantallas pequeñas */
+            min-height: 400px; /* Altura mínima para asegurar visibilidad */
+            height: 600px; /* Altura predeterminada, ajusta según sea necesario */
+            border: 1px solid #ddd; /* Un borde sutil para el iframe */
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        table tr:nth-child(even) {
-            background-color: #f2f2f2; /* Gris claro para filas pares */
+
+        /* Responsive adjustments */
+        @media (min-width: 768px) {
+            .funcionalidades {
+                grid-template-columns: 1fr 1fr; /* Two columns on larger screens */
+            }
+            .regresion-lineal {
+                grid-column: span 2; /* Regresión Lineal takes full width */
+            }
+        }
+        @media (max-width: 767px) {
+            .contenedor-botones {
+                flex-direction: column; /* Botones apilados en pantallas pequeñas */
+            }
         }
 
     </style>
@@ -115,10 +189,10 @@
                         <span>Predecir</span>
                     </button>
                 </div>
-                <div id="resultados-prediccion" style="display:none;">
+                <div id="resultados-prediccion">
                     Resultados de la Predicción:
                 </div>
-                <div id="tabla-resultados" style="display:none;">
+                <div id="tabla-resultados">
                 </div>
             </div>
         </section>
@@ -139,6 +213,22 @@
                 </div>
             </div>
         </section>
+
+        ---
+        <section class="metabase-chart">
+            <h2>Gráfico de Rendimiento de Metabase</h2>
+            <div class="contenedor-grafico">
+                <iframe
+                    src="METABASE_IFRAME_URL_PLACEHOLDER"
+                    width="100%"
+                    height="600"
+                    allowTransparency="true"
+                    frameBorder="0"
+                ></iframe>
+            </div>
+        </section>
+        ---
+
     </div>
 
     <script>
@@ -150,7 +240,7 @@
         const tablaResultadosDiv = document.getElementById('tabla-resultados');
 
 
-        let csvDataEntrenamiento = null;  // Para almacenar los datos del CSV de entrenamiento
+        let csvDataEntrenamiento = null;   // Para almacenar los datos del CSV de entrenamiento
         let csvDataPrediccion = null;
         let modeloEntrenado = false; // Para controlar si se ha entrenado un modelo
 
@@ -180,7 +270,7 @@
             const formData = new FormData();
             formData.append('file', new Blob([csvDataEntrenamiento]), 'entrenamiento.csv'); // Enviar como Blob
 
-            fetch('https://azurepy.onrender.com/api/predict/performance_train', {  // Usando la URL proporcionada
+            fetch('https://azurepy.onrender.com/api/predict/performance_train', {   // Usando la URL proporcionada
                 method: 'POST',
                 body: formData,
             })
@@ -228,7 +318,7 @@
             const formData = new FormData();
             formData.append('file', new Blob([csvDataPrediccion]), 'prediction.csv'); // Enviar como Blob
 
-            fetch('https://azurepy.onrender.com/api/predict/future_performance', {  // Usando la URL de la API
+            fetch('https://azurepy.onrender.com/api/predict/future_performance', {   // Usando la URL de la API
                 method: 'POST',
                 body: formData,
             })
