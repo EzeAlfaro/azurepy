@@ -385,13 +385,16 @@
 
         console.log("🔥 ENVIANDO A PostgreSQL:", resultados_regresion);
 
-        const res = await fetch("/api/predict/save_results", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ resultados: resultados_regresion }),
-        });
+        const res = await fetch(
+          "https://azurepy.onrender.com/api/predict/save_results",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ resultados: resultados_regresion }),
+          }
+        );
 
         console.log("Status:", res.status, "OK?", res.ok);
 
