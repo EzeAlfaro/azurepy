@@ -204,6 +204,9 @@
             <button class="boton-predecir">
               <span>Predecir</span>
             </button>
+            <button class="boton-guardar">
+              <span>Guardar en base de datos</span>
+            </button>
           </div>
           <div id="resultados-prediccion">Resultados de la Predicción:</div>
           <div id="tabla-resultados"></div>
@@ -244,6 +247,8 @@
     </div>
 
     <script>
+      let resultados_regresion = [];
+
       const botonSubirCsvEntrenamiento = document.querySelector(
         ".boton-subir-csv-entrenamiento"
       );
@@ -257,6 +262,7 @@
       const resultadosPrediccionDiv = document.getElementById(
         "resultados-prediccion"
       );
+      const botonGuardarRegresion = document.querySelector(".boton-guardar");
       const tablaResultadosDiv = document.getElementById("tabla-resultados");
 
       let csvDataEntrenamiento = null; // Para almacenar los datos del CSV de entrenamiento
@@ -369,22 +375,59 @@
           });
       });
 
+      botonGuardarRegresion.addEventListener("click", async () => {
+        if (resultados_regresion.length === 0) {
+          alert(
+            "⚠️ Primero realizá la predicción con regresión lineal antes de guardar."
+          );
+          return;
+        }
+
+        console.log("🔥 ENVIANDO A PostgreSQL:", resultados_regresion);
+
+        const res = await fetch("/api/predict/save_results", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ resultados: resultados_regresion }),
+        });
+
+        console.log("Status:", res.status, "OK?", res.ok);
+
+        const text = await res.text();
+        console.log("Respuesta raw:", text);
+
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          console.error("❌ Error parseando JSON:", e, text);
+          alert("❌ Error inesperado al guardar.");
+          return;
+        }
+
+        if (res.ok) {
+          alert("✅ Datos guardados en PostgreSQL.");
+        } else {
+          alert("❌ Error: " + (data.error || "Error desconocido"));
+        }
+      });
+
       function mostrarResultadosPrediccion(data) {
         resultadosPrediccionDiv.style.display = "block";
         tablaResultadosDiv.innerHTML = "";
         tablaResultadosDiv.style.display = "none";
 
-        if (
-          !data ||
-          !Array.isArray(data.predicciones) ||
-          data.predicciones.length === 0
-        ) {
+        // Si `data` ya es un array (como viene del backend)
+        const predicciones = Array.isArray(data) ? data : data.predicciones;
+        resultados_regresion = predicciones;
+
+        if (!Array.isArray(predicciones) || predicciones.length === 0) {
           resultadosPrediccionDiv.textContent =
             "No se obtuvieron resultados de la predicción.";
           return;
         }
-
-        const predicciones = data.predicciones;
 
         // Obtener las columnas desde las claves del primer objeto
         const columnas = Object.keys(predicciones[0]);
