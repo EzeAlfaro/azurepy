@@ -1,393 +1,433 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Interfaz de Ainabi</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
-            background-color: #f4f4f4;
-            color: #333;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 20px;
+        background-color: #f4f4f4;
+        color: #333;
+      }
 
-        .titulo-descripcion {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+      .titulo-descripcion {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
 
-        .titulo-descripcion h1 {
-            color: #0056b3;
-            margin-bottom: 10px;
-        }
+      .titulo-descripcion h1 {
+        color: #0056b3;
+        margin-bottom: 10px;
+      }
 
-        .titulo-descripcion h2 {
-            color: #555;
-            font-size: 1.2em;
-        }
+      .titulo-descripcion h2 {
+        color: #555;
+        font-size: 1.2em;
+      }
 
+      .funcionalidades {
+        display: grid;
+        gap: 25px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .regresion-lineal,
+      .kmeans,
+      .metabase-chart {
+        background-color: #fff;
+        padding: 25px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .regresion-lineal h2,
+      .kmeans h2,
+      .metabase-chart h2 {
+        color: #007bff;
+        margin-top: 0;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+      }
+
+      .contenedor-entrenamiento,
+      .contenedor-prediccion,
+      .contenedor-kmeans,
+      .contenedor-grafico {
+        margin-bottom: 15px;
+      }
+
+      .texto-entrenamiento,
+      .texto-prediccion,
+      .texto-kmeans {
+        margin-bottom: 15px;
+        color: #666;
+      }
+
+      .contenedor-botones {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap; /* Permite que los botones se envuelvan en pantallas pequeñas */
+      }
+
+      .boton-subir-csv-entrenamiento,
+      .boton-entrenar-regresion,
+      .boton-cargar-csv-prediccion,
+      .boton-predecir,
+      .boton-subir-csv-kmeans,
+      .boton-aplicar-kmeans {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: #28a745;
+        color: white;
+        cursor: pointer;
+        font-size: 1em;
+        transition: background-color 0.3s ease;
+      }
+
+      .boton-subir-csv-entrenamiento:hover,
+      .boton-entrenar-regresion:hover,
+      .boton-cargar-csv-prediccion:hover,
+      .boton-predecir:hover,
+      .boton-subir-csv-kmeans:hover,
+      .boton-aplicar-kmeans:hover {
+        background-color: #218838;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        border: 1px solid #ccc;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      th,
+      td {
+        padding: 12px;
+        border: 1px solid #e0e0e0;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f8f9fa;
+        color: #495057;
+        font-weight: bold;
+      }
+
+      table tr:nth-child(odd) {
+        background-color: #fdfdfd;
+      }
+      table tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      #resultados-prediccion {
+        margin-top: 20px;
+        font-weight: bold;
+        color: #1a712e;
+        padding: 10px;
+        background-color: #d4edda;
+        border-radius: 5px;
+        display: none; /* Se mostrará con JavaScript */
+      }
+
+      /* Estilos para el iframe de Metabase */
+      .contenedor-grafico iframe {
+        display: block; /* Asegura que el iframe se comporte como un bloque para aplicar márgenes */
+        margin: 0 auto; /* Centra el iframe horizontalmente */
+        max-width: 100%; /* Asegura que el iframe no se desborde en pantallas pequeñas */
+        min-height: 400px; /* Altura mínima para asegurar visibilidad */
+        height: 600px; /* Altura predeterminada, ajusta según sea necesario */
+        border: 1px solid #ddd; /* Un borde sutil para el iframe */
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Responsive adjustments */
+      @media (min-width: 768px) {
         .funcionalidades {
-            display: grid;
-            gap: 25px;
-            max-width: 1200px;
-            margin: 0 auto;
+          grid-template-columns: 1fr 1fr; /* Two columns on larger screens */
         }
-
-        .regresion-lineal, .kmeans, .metabase-chart {
-            background-color: #fff;
-            padding: 25px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        .regresion-lineal {
+          grid-column: span 2; /* Regresión Lineal takes full width */
         }
-
-        .regresion-lineal h2, .kmeans h2, .metabase-chart h2 {
-            color: #007bff;
-            margin-top: 0;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-        }
-
-        .contenedor-entrenamiento, .contenedor-prediccion, .contenedor-kmeans, .contenedor-grafico {
-            margin-bottom: 15px;
-        }
-
-        .texto-entrenamiento, .texto-prediccion, .texto-kmeans {
-            margin-bottom: 15px;
-            color: #666;
-        }
-
+      }
+      @media (max-width: 767px) {
         .contenedor-botones {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap; /* Permite que los botones se envuelvan en pantallas pequeñas */
+          flex-direction: column; /* Botones apilados en pantallas pequeñas */
         }
-
-        .boton-subir-csv-entrenamiento, .boton-entrenar-regresion,
-        .boton-cargar-csv-prediccion, .boton-predecir,
-        .boton-subir-csv-kmeans, .boton-aplicar-kmeans {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #28a745;
-            color: white;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s ease;
-        }
-
-        .boton-subir-csv-entrenamiento:hover, .boton-entrenar-regresion:hover,
-        .boton-cargar-csv-prediccion:hover, .boton-predecir:hover,
-        .boton-subir-csv-kmeans:hover, .boton-aplicar-kmeans:hover {
-            background-color: #218838;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            border: 1px solid #ccc;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        th, td {
-            padding: 12px;
-            border: 1px solid #e0e0e0;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f8f9fa;
-            color: #495057;
-            font-weight: bold;
-        }
-
-        table tr:nth-child(odd) {
-            background-color: #fdfdfd;
-        }
-        table tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        #resultados-prediccion {
-            margin-top: 20px;
-            font-weight: bold;
-            color: #1a712e;
-            padding: 10px;
-            background-color: #d4edda;
-            border-radius: 5px;
-            display: none; /* Se mostrará con JavaScript */
-        }
-
-        /* Estilos para el iframe de Metabase */
-        .contenedor-grafico iframe {
-            display: block; /* Asegura que el iframe se comporte como un bloque para aplicar márgenes */
-            margin: 0 auto; /* Centra el iframe horizontalmente */
-            max-width: 100%; /* Asegura que el iframe no se desborde en pantallas pequeñas */
-            min-height: 400px; /* Altura mínima para asegurar visibilidad */
-            height: 600px; /* Altura predeterminada, ajusta según sea necesario */
-            border: 1px solid #ddd; /* Un borde sutil para el iframe */
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        /* Responsive adjustments */
-        @media (min-width: 768px) {
-            .funcionalidades {
-                grid-template-columns: 1fr 1fr; /* Two columns on larger screens */
-            }
-            .regresion-lineal {
-                grid-column: span 2; /* Regresión Lineal takes full width */
-            }
-        }
-        @media (max-width: 767px) {
-            .contenedor-botones {
-                flex-direction: column; /* Botones apilados en pantallas pequeñas */
-            }
-        }
-
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="titulo-descripcion">
-        <h1>Bienvenido</h1>
-        <h2>Aquí podrás probar las distintas funcionalidades de Ainabi</h2>
+      <h1>Bienvenido</h1>
+      <h2>Aquí podrás probar las distintas funcionalidades de Ainabi</h2>
     </div>
 
     <div class="funcionalidades">
-        <section class="regresion-lineal">
-            <h2>Regresión Lineal</h2>
-            <div class="contenedor-entrenamiento">
-                <p class="texto-entrenamiento">
-                    Aquí podrás entrenar el modelo de regresión lineal, selecciona un archivo CSV:
-                </p>
-                <div class="contenedor-botones">
-                    <button class="boton-subir-csv-entrenamiento">
-                        <span>Ingresar archivo CSV</span>
-                    </button>
-                    <button class="boton-entrenar-regresion">
-                        <span>Entrenar Modelo</span>
-                    </button>
-                </div>
-            </div>
-            <div class="contenedor-prediccion">
-                <p class="texto-prediccion">
-                    Cargue un archivo CSV para predecir los resultados:
-                </p>
-                <div class="contenedor-botones">
-                    <button class="boton-cargar-csv-prediccion">
-                        <span>Ingresar archivo CSV de predicción</span>
-                    </button>
-                    <button class="boton-predecir">
-                        <span>Predecir</span>
-                    </button>
-                </div>
-                <div id="resultados-prediccion">
-                    Resultados de la Predicción:
-                </div>
-                <div id="tabla-resultados">
-                </div>
-            </div>
-        </section>
+      <section class="regresion-lineal">
+        <h2>Regresión Lineal</h2>
+        <div class="contenedor-entrenamiento">
+          <p class="texto-entrenamiento">
+            Aquí podrás entrenar el modelo de regresión lineal, selecciona un
+            archivo CSV:
+          </p>
+          <div class="contenedor-botones">
+            <button class="boton-subir-csv-entrenamiento">
+              <span>Ingresar archivo CSV</span>
+            </button>
+            <button class="boton-entrenar-regresion">
+              <span>Entrenar Modelo</span>
+            </button>
+          </div>
+        </div>
+        <div class="contenedor-prediccion">
+          <p class="texto-prediccion">
+            Cargue un archivo CSV para predecir los resultados:
+          </p>
+          <div class="contenedor-botones">
+            <button class="boton-cargar-csv-prediccion">
+              <span>Ingresar archivo CSV de predicción</span>
+            </button>
+            <button class="boton-predecir">
+              <span>Predecir</span>
+            </button>
+          </div>
+          <div id="resultados-prediccion">Resultados de la Predicción:</div>
+          <div id="tabla-resultados"></div>
+        </div>
+      </section>
 
-        <section class="kmeans">
-            <h2>K-Means</h2>
-            <div class="contenedor-kmeans">
-                <p class="texto-kmeans">
-                    Aquí podrás aplicar el modelo de K-means, selecciona un archivo CSV:
-                </p>
-                <div class="contenedor-botones">
-                    <button class="boton-subir-csv-kmeans">
-                        <span>Ingresar archivo CSV</span>
-                    </button>
-                    <button class="boton-aplicar-kmeans">
-                        <span>Aplicar K-Means</span>
-                    </button>
-                </div>
-            </div>
-        </section>
+      <section class="kmeans">
+        <h2>K-Means</h2>
+        <div class="contenedor-kmeans">
+          <p class="texto-kmeans">
+            Aquí podrás aplicar el modelo de K-means, selecciona un archivo CSV:
+          </p>
+          <div class="contenedor-botones">
+            <button class="boton-subir-csv-kmeans">
+              <span>Ingresar archivo CSV</span>
+            </button>
+            <button class="boton-aplicar-kmeans">
+              <span>Aplicar K-Means</span>
+            </button>
+          </div>
+        </div>
+      </section>
 
-        ---
-        <section class="metabase-chart">
-            <h2>Gráfico de Rendimiento de Metabase</h2>
-            <div class="contenedor-grafico">
-                <iframe
-                    src="METABASE_IFRAME_URL_PLACEHOLDER"
-                    width="100%"
-                    height="600"
-                    allowTransparency="true"
-                    frameBorder="0"
-                ></iframe>
-            </div>
-        </section>
-        ---
-
+      ---
+      <section class="metabase-chart">
+        <h2>Gráfico de Rendimiento de Metabase</h2>
+        <div class="contenedor-grafico">
+          <iframe
+            src="METABASE_IFRAME_URL_PLACEHOLDER"
+            width="100%"
+            height="600"
+            allowTransparency="true"
+            frameborder="0"
+          ></iframe>
+        </div>
+      </section>
+      ---
     </div>
 
     <script>
-        const botonSubirCsvEntrenamiento = document.querySelector('.boton-subir-csv-entrenamiento');
-        const botonEntrenarRegresion = document.querySelector('.boton-entrenar-regresion');
-        const botonCargarCsvPrediccion = document.querySelector('.boton-cargar-csv-prediccion');
-        const botonPredecir = document.querySelector('.boton-predecir');
-        const resultadosPrediccionDiv = document.getElementById('resultados-prediccion');
-        const tablaResultadosDiv = document.getElementById('tabla-resultados');
+      const botonSubirCsvEntrenamiento = document.querySelector(
+        ".boton-subir-csv-entrenamiento"
+      );
+      const botonEntrenarRegresion = document.querySelector(
+        ".boton-entrenar-regresion"
+      );
+      const botonCargarCsvPrediccion = document.querySelector(
+        ".boton-cargar-csv-prediccion"
+      );
+      const botonPredecir = document.querySelector(".boton-predecir");
+      const resultadosPrediccionDiv = document.getElementById(
+        "resultados-prediccion"
+      );
+      const tablaResultadosDiv = document.getElementById("tabla-resultados");
 
+      let csvDataEntrenamiento = null; // Para almacenar los datos del CSV de entrenamiento
+      let csvDataPrediccion = null;
+      let modeloEntrenado = false; // Para controlar si se ha entrenado un modelo
 
-        let csvDataEntrenamiento = null;   // Para almacenar los datos del CSV de entrenamiento
-        let csvDataPrediccion = null;
-        let modeloEntrenado = false; // Para controlar si se ha entrenado un modelo
+      botonSubirCsvEntrenamiento.addEventListener("click", () => {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".csv";
+        input.onchange = (event) => {
+          const file = event.target.files[0];
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            csvDataEntrenamiento = e.target.result; // Almacena los datos del CSV
+            alert(
+              "Archivo CSV de entrenamiento cargado. Ahora puede entrenar el modelo."
+            );
+          };
+          reader.readAsText(file);
+        };
+        input.click();
+      });
 
+      botonEntrenarRegresion.addEventListener("click", () => {
+        if (!csvDataEntrenamiento) {
+          alert("Por favor, cargue primero un archivo CSV de entrenamiento.");
+          return;
+        }
+        // Lógica para enviar el archivo a la API para el entrenamiento
+        const formData = new FormData();
+        formData.append(
+          "file",
+          new Blob([csvDataEntrenamiento]),
+          "entrenamiento.csv"
+        ); // Enviar como Blob
 
-        botonSubirCsvEntrenamiento.addEventListener('click', () => {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.csv';
-            input.onchange = (event) => {
-                const file = event.target.files[0];
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    csvDataEntrenamiento = e.target.result; // Almacena los datos del CSV
-                    alert('Archivo CSV de entrenamiento cargado. Ahora puede entrenar el modelo.');
-                };
-                reader.readAsText(file);
-            };
-            input.click();
-        });
+        fetch("https://azurepy.onrender.com/api/predict/performance_train", {
+          // Usando la URL proporcionada
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Respuesta de la API:", data);
+            alert(
+              "Modelo entrenado con éxito. Ahora puede predecir. Precisión del modelo: " +
+                data.r2_score
+            ); // Agregando la precisión
+            modeloEntrenado = true; // Simula que el modelo se ha entrenado
+          })
+          .catch((error) => {
+            console.error("Error al entrenar el modelo:", error);
+            alert("Error al entrenar el modelo.");
+          });
+      });
 
-        botonEntrenarRegresion.addEventListener('click', () => {
-            if (!csvDataEntrenamiento) {
-                alert('Por favor, cargue primero un archivo CSV de entrenamiento.');
-                return;
-            }
-            // Lógica para enviar el archivo a la API para el entrenamiento
-            const formData = new FormData();
-            formData.append('file', new Blob([csvDataEntrenamiento]), 'entrenamiento.csv'); // Enviar como Blob
+      botonCargarCsvPrediccion.addEventListener("click", () => {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".csv";
+        input.onchange = (event) => {
+          const file = event.target.files[0];
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            csvDataPrediccion = e.target.result;
+            alert("Archivo CSV de predicción cargado. Ahora puede predecir.");
+          };
+          reader.readAsText(file);
+        };
+        input.click();
+      });
 
-            fetch('https://azurepy.onrender.com/api/predict/performance_train', {   // Usando la URL proporcionada
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Respuesta de la API:', data);
-                alert('Modelo entrenado con éxito. Ahora puede predecir. Precisión del modelo: ' + data.r2_score); // Agregando la precisión
-                modeloEntrenado = true; // Simula que el modelo se ha entrenado
-            })
-            .catch(error => {
-                console.error('Error al entrenar el modelo:', error);
-                alert('Error al entrenar el modelo.');
-            });
-        });
-
-
-
-        botonCargarCsvPrediccion.addEventListener('click', () => {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.csv';
-            input.onchange = (event) => {
-                const file = event.target.files[0];
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    csvDataPrediccion = e.target.result;
-                    alert('Archivo CSV de predicción cargado. Ahora puede predecir.');
-                };
-                reader.readAsText(file);
-            };
-            input.click();
-        });
-
-        botonPredecir.addEventListener('click', () => {
-            if (!csvDataPrediccion) {
-                alert('Por favor, cargue primero un archivo CSV de predicción.');
-                return;
-            }
-           if (!modeloEntrenado) {
-                alert('Por favor, entrene primero el modelo.');
-                return;
-            }
-
-            // Simulación de la lógica de predicción y generación de tabla
-            const formData = new FormData();
-            formData.append('file', new Blob([csvDataPrediccion]), 'prediction.csv'); // Enviar como Blob
-
-            fetch('https://azurepy.onrender.com/api/predict/future_performance', {   // Usando la URL de la API
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Respuesta de la API:', data);
-                // Aquí podrías procesar la respuesta de la API para mostrar los resultados
-                if (data && data.error) {
-                    alert('Error al realizar la predicción: ' + data.error);
-                    return;
-                }
-                mostrarResultadosPrediccion(data);
-
-            })
-            .catch(error => {
-                console.error('Error al predecir:', error);
-                alert('Error al realizar la predicción.');
-            });
-        });
-
-        function mostrarResultadosPrediccion(data) {
-            resultadosPrediccionDiv.style.display = 'block';
-            tablaResultadosDiv.innerHTML = '';
-            tablaResultadosDiv.style.display = 'none';
-
-            if (!data || !data.predicciones || !Array.isArray(data.predicciones) || data.predicciones.length === 0) {
-                resultadosPrediccionDiv.textContent = 'No se obtuvieron resultados de la predicción.';
-                return;
-            }
-
-            // Procesar el CSV para obtener las columnas
-            const lineas = csvDataPrediccion.trim().split('\n');
-            const encabezadosCsv = lineas[0].split(',');
-            const datosCsv = lineas.slice(1).map(linea => linea.split(','));
-
-            // Crear la tabla HTML
-            let tablaHTML = '<table>';
-            tablaHTML += '<tr>';
-            encabezadosCsv.forEach(encabezado => {
-                tablaHTML += `<th>${encabezado}</th>`;
-            });
-            tablaHTML += '<th>desempenio_futuro</th></tr>';
-
-            // Agregar filas con datos del CSV y predicciones
-            datosCsv.forEach((fila, index) => {
-                tablaHTML += '<tr>';
-                fila.forEach(valor => {
-                    tablaHTML += `<td>${valor}</td>`;
-                });
-                tablaHTML += `<td>${data.predicciones[index] || 'N/A'}</td>`; // Usar 'N/A' si no hay predicción
-                tablaHTML += '</tr>';
-            });
-            tablaHTML += '</table>';
-
-            tablaResultadosDiv.innerHTML = tablaHTML;
-            tablaResultadosDiv.style.display = 'block';
+      botonPredecir.addEventListener("click", () => {
+        if (!csvDataPrediccion) {
+          alert("Por favor, cargue primero un archivo CSV de predicción.");
+          return;
+        }
+        if (!modeloEntrenado) {
+          alert("Por favor, entrene primero el modelo.");
+          return;
         }
 
+        // Simulación de la lógica de predicción y generación de tabla
+        const formData = new FormData();
+        formData.append(
+          "file",
+          new Blob([csvDataPrediccion]),
+          "prediction.csv"
+        ); // Enviar como Blob
 
-        const botonSubirCsvKmeans = document.querySelector('.boton-subir-csv-kmeans');
-        const botonAplicarKmeans = document.querySelector('.boton-aplicar-kmeans');
+        fetch("https://azurepy.onrender.com/api/predict/future_performance", {
+          // Usando la URL de la API
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Respuesta de la API:", data);
+            // Aquí podrías procesar la respuesta de la API para mostrar los resultados
+            if (data && data.error) {
+              alert("Error al realizar la predicción: " + data.error);
+              return;
+            }
+            mostrarResultadosPrediccion(data);
+          })
+          .catch((error) => {
+            console.error("Error al predecir:", error);
+            alert("Error al realizar la predicción.");
+          });
+      });
 
-        botonSubirCsvKmeans.addEventListener('click', () => {
-            alert('Función para subir archivo CSV para K-Means no implementada aún');
+      function mostrarResultadosPrediccion(data) {
+        resultadosPrediccionDiv.style.display = "block";
+        tablaResultadosDiv.innerHTML = "";
+        tablaResultadosDiv.style.display = "none";
+
+        if (
+          !data ||
+          !Array.isArray(data.predicciones) ||
+          data.predicciones.length === 0
+        ) {
+          resultadosPrediccionDiv.textContent =
+            "No se obtuvieron resultados de la predicción.";
+          return;
+        }
+
+        const predicciones = data.predicciones;
+
+        // Obtener las columnas desde las claves del primer objeto
+        const columnas = Object.keys(predicciones[0]);
+
+        // Crear la tabla HTML
+        let tablaHTML = '<div class="contenedor-tabla"><table>';
+        tablaHTML += "<tr>";
+        columnas.forEach((col) => {
+          tablaHTML += `<th>${col}</th>`;
+        });
+        tablaHTML += "</tr>";
+
+        // Agregar las filas
+        predicciones.forEach((fila) => {
+          tablaHTML += "<tr>";
+          columnas.forEach((col) => {
+            tablaHTML += `<td>${fila[col]}</td>`;
+          });
+          tablaHTML += "</tr>";
         });
 
-        botonAplicarKmeans.addEventListener('click', () => {
-            alert('Función para aplicar K-Means no implementada aún');
-        });
+        tablaHTML += "</table></div>";
+
+        tablaResultadosDiv.innerHTML = tablaHTML;
+        tablaResultadosDiv.style.display = "block";
+      }
+
+      const botonSubirCsvKmeans = document.querySelector(
+        ".boton-subir-csv-kmeans"
+      );
+      const botonAplicarKmeans = document.querySelector(
+        ".boton-aplicar-kmeans"
+      );
+
+      botonSubirCsvKmeans.addEventListener("click", () => {
+        alert(
+          "Función para subir archivo CSV para K-Means no implementada aún"
+        );
+      });
+
+      botonAplicarKmeans.addEventListener("click", () => {
+        alert("Función para aplicar K-Means no implementada aún");
+      });
     </script>
-</body>
+  </body>
 </html>
