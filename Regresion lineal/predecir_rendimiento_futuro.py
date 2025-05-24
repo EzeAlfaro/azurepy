@@ -52,8 +52,13 @@ def predecir_rendimiento_futuro(archivo_csv):
         # --- Realizar la predicción ---
         predicciones_futuras = modelo_cargado.predict(x_nuevos)
 
+        # -- Agregar el resultado de las predicciones al DataFrame original --
+        nuevos_df["rendimiento_futuro"] = predicciones_futuras
+
         # --- Devolver las predicciones como un diccionario ---
-        resultados = {"predicciones": [float(pred) for pred in predicciones_futuras]}  # Convierte a float estándar de Python
+        ##resultados = {"predicciones": [float(pred) for pred in predicciones_futuras]}  # Convierte a float estándar de Python
+        resultados = nuevos_df.to_dict(orient="records")  # Convierte a float estándar de Python
+        return json.dumps(resultados, ensure_ascii=False) # Devuelve el diccionario como un string JSON
         return json.dumps(resultados) # Devuelve el diccionario como un string JSON
 
     except FileNotFoundError as e:
