@@ -59,7 +59,6 @@ def predecir_rendimiento_futuro(archivo_csv):
         ##resultados = {"predicciones": [float(pred) for pred in predicciones_futuras]}  # Convierte a float estándar de Python
         resultados = nuevos_df.to_dict(orient="records")  # Convierte a float estándar de Python
         return json.dumps(resultados, ensure_ascii=False) # Devuelve el diccionario como un string JSON
-        return json.dumps(resultados) # Devuelve el diccionario como un string JSON
 
     except FileNotFoundError as e:
         return json.dumps({"error": f"No se encontró el archivo: {e.filename}"})
