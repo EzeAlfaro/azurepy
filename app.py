@@ -218,7 +218,7 @@ def guardar_regresión():
         # Ajustá los nombres y orden según tu tabla
         query = """
             INSERT INTO regresion
-            (nombre, area, jerarquia, desempenio, cantidad_proyectos, personas_equipo, horas_extra, rendimiento_futuro, puntaje, asistencia_puntualidad)
+            (nombre, area, jerarquia, desempenio, cantidad_proyectos, personas_equipo, horas_extra, desempenio_futuro, puntaje, asistencia_puntualidad)
             VALUES %s
         """
         
