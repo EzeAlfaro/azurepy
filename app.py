@@ -230,7 +230,7 @@ def guardar_regresión():
                 d['desempenio'],
                 d['cantidad_proyectos'],
                 d['personas_equipo'],
-                d['horas_extra'],
+                bool(d['horas_extra']), #conversion directa a booleano
                 d['rendimiento_futuro'],
                 d['puntaje'],
                 d['asistencia_puntualidad']
