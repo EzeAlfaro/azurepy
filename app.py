@@ -229,7 +229,6 @@ def guardar_regresión():
                 d['jerarquia'],
                 d['desempenio'],
                 d['cantidad_proyectos'],
-                d['Rendimiento Medio'],
                 d['personas_equipo'],
                 d['horas_extra'],
                 d['desempenio_futuro'],
