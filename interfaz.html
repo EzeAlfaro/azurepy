@@ -367,7 +367,7 @@
               alert("Error al realizar la predicción: " + data.error);
               return;
             }
-            mostrarResultadosPrediccion(data);
+            mostrarResultadosPrediccion(data.resultados);
           })
           .catch((error) => {
             console.error("Error al predecir:", error);

@@ -179,10 +179,6 @@ def predict_future_performance():
     else:
         logging.info("Autenticación deshabilitada para /api/predict/future_performance")
 
-    datos = request.json.get('resultados')
-    if not datos:
-        return jsonify({"error": "No hay datos para guardar"}), 400
-
     try:
         if 'file' not in request.files:
             return jsonify({"error": "No se proporcionó ningún archivo CSV"}), 400
