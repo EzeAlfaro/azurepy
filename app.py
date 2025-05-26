@@ -179,6 +179,10 @@ def predict_future_performance():
     else:
         logging.info("Autenticación deshabilitada para /api/predict/future_performance")
 
+    datos = request.json.get('resultados')
+    if not datos:
+        return jsonify({"error": "No hay datos para guardar"}), 400
+
     try:
         if 'file' not in request.files:
             return jsonify({"error": "No se proporcionó ningún archivo CSV"}), 400
@@ -196,8 +200,45 @@ def predict_future_performance():
                 output = json.loads(output)
             except json.JSONDecodeError:
                 return jsonify({"error": "El script no devolvió un JSON válido: " + output}), 500
+        datos = output
         os.remove(archivo_temporal_path)
-        return jsonify(output), 200
+        # -- agrego el resultado a la base de datos
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        # borro los datos que estaban en la tabla regresion pra que quede la ultima predicción
+        cursor.execute("DELETE FROM regresion")
+
+        # Asumiendo que cada dict en datos tiene las columnas: Nombre, AusenciasInjustificadas, etc.
+        # Ajustá los nombres y orden según tu tabla
+        query = """
+            INSERT INTO regresion
+            (nombre, area, jerarquia, desempenio, cantidad_proyectos, personas_equipo, horas_extra, desempenio_futuro, puntaje, asistencia_puntualidad)
+            VALUES %s
+        """
+        
+        valores = [
+            (
+                d['nombre'],
+                d['area'],
+                d['jerarquia'],
+                d['desempenio'],
+                d['cantidad_proyectos'],
+                d['personas_equipo'],
+                bool(d['horas_extra']), #conversion directa a booleano
+                d['rendimiento_futuro'],
+                d['puntaje'],
+                d['asistencia_puntualidad']
+            ) for d in datos
+        ]
+
+        execute_values(cursor, query, valores)
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return jsonify({"mensaje": "Datos guardados en PostgreSQL exitosamente", "resultados": datos}), 200
+    
     except Exception as e:
         logging.error(f"Error al predecir el rendimiento futuro: {e}")
         return jsonify({"error": str(e)}), 500
