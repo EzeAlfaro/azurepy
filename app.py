@@ -238,54 +238,6 @@ def predict_future_performance():
     except Exception as e:
         logging.error(f"Error al predecir el rendimiento futuro: {e}")
         return jsonify({"error": str(e)}), 500
-    
-# -- Ruta para guardar resultados de regresión lineal en BD --
-@app.route('/api/predict/save_results', methods=['POST'])
-def guardar_regresión():
-    datos = request.json.get('resultados')
-    if not datos:
-        return jsonify({"error": "No hay datos para guardar"}), 400
-    
-    # Conexión y query para insertar varios registros rápido
-    try:
-        conn = get_connection()
-        cursor = conn.cursor()
-
-        # borro los datos que estaban en la tabla regresion pra que quede la ultima predicción
-        cursor.execute("DELETE FROM regresion")
-
-        # Asumiendo que cada dict en datos tiene las columnas: Nombre, AusenciasInjustificadas, etc.
-        # Ajustá los nombres y orden según tu tabla
-        query = """
-            INSERT INTO regresion
-            (nombre, area, jerarquia, desempenio, cantidad_proyectos, personas_equipo, horas_extra, desempenio_futuro, puntaje, asistencia_puntualidad)
-            VALUES %s
-        """
-        
-        valores = [
-            (
-                d['nombre'],
-                d['area'],
-                d['jerarquia'],
-                d['desempenio'],
-                d['cantidad_proyectos'],
-                d['personas_equipo'],
-                bool(d['horas_extra']), #conversion directa a booleano
-                d['rendimiento_futuro'],
-                d['puntaje'],
-                d['asistencia_puntualidad']
-            ) for d in datos
-        ]
-
-        execute_values(cursor, query, valores)
-        conn.commit()
-        cursor.close()
-        conn.close()
-
-        return jsonify({"mensaje": "Datos guardados en PostgreSQL exitosamente"}), 200
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 
 @app.route('/test', methods=['GET'])
 def test_page():
