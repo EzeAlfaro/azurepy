@@ -25,7 +25,7 @@ FIREBASE_SERVICE_ACCOUNT_PATH = os.path.join(os.path.dirname(__file__), "firebas
 
 # Configuración de Metabase
 # Asegúrate de que esta URL sea la de tu instancia de Metabase (cambia si no es localhost:3000)
-METABASE_SITE_URL = "http://localhost:3000"
+METABASE_SITE_URL = "https://31dd-2802-8010-9425-3100-6495-3c7e-109f-1756.ngrok-free.app"
 # ¡MANTÉN ESTA CLAVE SÚPER SEGURA! Obtenla de la configuración de incrustación de Metabase.
 METABASE_SECRET_KEY = "940957bdbb152c1ff9c817f89d16f68e81b6b30e39b362567a4c23a71a4dd388"
 # El ID de la pregunta/gráfico de Metabase que quieres incrustar.
