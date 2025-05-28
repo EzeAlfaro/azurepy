@@ -6,10 +6,10 @@
     <title>Interfaz de Ainabi</title>
     <style>
       body {
-        font-family: 'Inter', sans-serif; /* Changed font to Inter */
+        font-family: Arial, sans-serif;
         line-height: 1.6;
         margin: 20px;
-        background-color: #f4f7f6; /* Lighter background */
+        background-color: #f4f4f4;
         color: #333;
       }
 
@@ -18,12 +18,12 @@
         margin-bottom: 30px;
         padding: 20px;
         background-color: #fff;
-        border-radius: 12px; /* More rounded corners */
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Stronger shadow */
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
 
       .titulo-descripcion h1 {
-        color: #2c3e50; /* Darker blue for headings */
+        color: #0056b3;
         margin-bottom: 10px;
       }
 
@@ -41,27 +41,18 @@
 
       .regresion-lineal,
       .kmeans,
-      .metabase-chart,
-      .charts-section { /* Added charts-section */
-        background-color: #ffffff; /* White background */
+      .metabase-chart {
+        background-color: #fff;
         padding: 25px;
-        border: 1px solid #e0e0e0; /* Lighter border */
-        border-radius: 12px; /* Consistent rounded corners */
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Consistent shadow */
-        transition: transform 0.2s ease-in-out; /* Added transition */
-      }
-      .regresion-lineal:hover,
-      .kmeans:hover,
-      .metabase-chart:hover,
-      .charts-section:hover {
-          transform: translateY(-5px); /* Hover effect */
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       }
 
       .regresion-lineal h2,
       .kmeans h2,
-      .metabase-chart h2,
-      .charts-section h2 { /* Added charts-section */
-        color: #3498db; /* Consistent blue for section headings */
+      .metabase-chart h2 {
+        color: #007bff;
         margin-top: 0;
         margin-bottom: 20px;
         border-bottom: 2px solid #eee;
@@ -92,28 +83,25 @@
       .boton-entrenar-regresion,
       .boton-cargar-csv-prediccion,
       .boton-predecir,
-      .boton-guardar, /* Added save button style */
       .boton-subir-csv-kmeans,
       .boton-aplicar-kmeans {
         padding: 12px 20px;
         border: none;
-        border-radius: 8px; /* More rounded buttons */
-        background-color: #28a745; /* Green for actions */
+        border-radius: 5px;
+        background-color: #28a745;
         color: white;
         cursor: pointer;
         font-size: 1em;
-        transition: background-color 0.3s ease, transform 0.1s ease;
+        transition: background-color 0.3s ease;
       }
 
       .boton-subir-csv-entrenamiento:hover,
       .boton-entrenar-regresion:hover,
       .boton-cargar-csv-prediccion:hover,
       .boton-predecir:hover,
-      .boton-guardar:hover, /* Added save button hover */
       .boton-subir-csv-kmeans:hover,
       .boton-aplicar-kmeans:hover {
         background-color: #218838;
-        transform: translateY(-2px); /* Hover effect */
       }
 
       table {
@@ -122,8 +110,6 @@
         margin-top: 20px;
         border: 1px solid #ccc;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        border-radius: 8px; /* Rounded table corners */
-        overflow: hidden; /* Ensures rounded corners apply to content */
       }
 
       th,
@@ -158,36 +144,14 @@
 
       /* Estilos para el iframe de Metabase */
       .contenedor-grafico iframe {
-        display: block;
-        margin: 0 auto;
-        max-width: 100%;
-        min-height: 400px;
-        height: 600px;
-        border: 1px solid #ddd;
-        border-radius: 8px; /* Consistent rounded corners */
+        display: block; /* Asegura que el iframe se comporte como un bloque para aplicar márgenes */
+        margin: 0 auto; /* Centra el iframe horizontalmente */
+        max-width: 100%; /* Asegura que el iframe no se desborde en pantallas pequeñas */
+        min-height: 400px; /* Altura mínima para asegurar visibilidad */
+        height: 600px; /* Altura predeterminada, ajusta según sea necesario */
+        border: 1px solid #ddd; /* Un borde sutil para el iframe */
+        border-radius: 5px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      }
-
-      /* Styles for the new charts section */
-      .charts-container {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: space-around;
-          gap: 20px;
-          margin-top: 20px;
-      }
-      .chart-card {
-          min-height: 350px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          width: 48%; /* Adjust for responsiveness */
-          box-sizing: border-box;
-      }
-      .chart-card canvas {
-          max-width: 100%;
-          height: auto !important; /* Important for Chart.js responsiveness */
       }
 
       /* Responsive adjustments */
@@ -198,21 +162,13 @@
         .regresion-lineal {
           grid-column: span 2; /* Regresión Lineal takes full width */
         }
-        .chart-card {
-            width: 48%; /* Two charts per row on larger screens */
-        }
       }
       @media (max-width: 767px) {
         .contenedor-botones {
           flex-direction: column; /* Botones apilados en pantallas pequeñas */
         }
-        .chart-card {
-            width: 95%; /* Full width on small screens */
-        }
       }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   </head>
   <body>
     <div class="titulo-descripcion">
@@ -274,6 +230,7 @@
         </div>
       </section>
 
+      ---
       <section class="metabase-chart">
         <h2>Gráfico de Rendimiento de Metabase</h2>
         <div class="contenedor-grafico">
@@ -286,25 +243,8 @@
           ></iframe>
         </div>
       </section>
-
-      <section id="charts-section" class="charts-section">
-          <h2>Gráficos de Datos de Regresión</h2>
-          <div class="charts-container">
-              <div class="chart-card">
-                  <h3>Desempeño Futuro Distribuido</h3>
-                  <canvas id="futurePerformanceChart"></canvas>
-              </div>
-              <div class="chart-card">
-                  <h3>Empleados por Área</h3>
-                  <canvas id="employeesByAreaChart"></canvas>
-              </div>
-              <div class="chart-card">
-                  <h3>Distribución por Jerarquía</h3>
-                  <canvas id="hierarchyDistributionChart"></canvas>
-              </div>
-          </div>
-      </section>
-      </div>
+      ---
+    </div>
 
     <script>
       let resultados_regresion = [];
@@ -428,7 +368,6 @@
               return;
             }
             mostrarResultadosPrediccion(data.resultados);
-            fetchAndRenderCharts(); // Call this to refresh charts after new prediction
           })
           .catch((error) => {
             console.error("Error al predecir:", error);
@@ -446,14 +385,6 @@
 
         console.log("🔥 ENVIANDO A PostgreSQL:", resultados_regresion);
 
-        // Note: The /api/predict/save_results endpoint does not exist in your Flask app.
-        // The /api/predict/future_performance endpoint already saves to DB.
-        // This button's functionality is likely redundant if the prediction already saves.
-        // If you intend to have a separate save endpoint, you'll need to implement it in Flask.
-        alert("La predicción ya guarda los datos en la base de datos automáticamente. No es necesario guardar de nuevo.");
-        return; // Prevent further execution
-
-        /*
         const res = await fetch(
           "https://azurepy.onrender.com/api/predict/save_results",
           {
@@ -484,7 +415,6 @@
         } else {
           alert("❌ Error: " + (data.error || "Error desconocido"));
         }
-        */
       });
 
       function mostrarResultadosPrediccion(data) {
@@ -544,179 +474,6 @@
       botonAplicarKmeans.addEventListener("click", () => {
         alert("Función para aplicar K-Means no implementada aún");
       });
-
-      // --- CHARTS SECTION ---
-      async function fetchAndRenderCharts() {
-          try {
-              const response = await fetch('https://azurepy.onrender.com/api/data/regresion'); // Use the external URL
-              if (!response.ok) {
-                  throw new Error(`HTTP error! status: ${response.status}`);
-              }
-              const data = await response.json();
-              console.log("Fetched regression data for charts:", data); // Debugging
-
-              if (data.length === 0) {
-                  document.getElementById('charts-section').innerHTML = '<h2>Gráficos de Datos de Regresión</h2><p style="text-align: center;">No hay datos disponibles en la tabla de regresión para mostrar gráficos.</p>';
-                  return;
-              }
-
-              // Destroy existing charts if they exist to prevent duplicates
-              if (window.futurePerformanceChartInstance) {
-                  window.futurePerformanceChartInstance.destroy();
-              }
-              if (window.employeesByAreaChartInstance) {
-                  window.employeesByAreaChartInstance.destroy();
-              }
-              if (window.hierarchyDistributionChartInstance) {
-                  window.hierarchyDistributionChartInstance.destroy();
-              }
-
-              // Chart 1: Desempeño Futuro Distribuido (Bar Chart)
-              const futurePerformanceCounts = {};
-              data.forEach(item => {
-                  const performance = item.desempenio_futuro;
-                  futurePerformanceCounts[performance] = (futurePerformanceCounts[performance] || 0) + 1;
-              });
-              const futurePerformanceLabels = Object.keys(futurePerformanceCounts).sort();
-              const futurePerformanceData = futurePerformanceLabels.map(label => futurePerformanceCounts[label]);
-
-              window.futurePerformanceChartInstance = new Chart(document.getElementById('futurePerformanceChart'), {
-                  type: 'bar',
-                  data: {
-                      labels: futurePerformanceLabels,
-                      datasets: [{
-                          label: 'Número de Empleados',
-                          data: futurePerformanceData,
-                          backgroundColor: 'rgba(52, 152, 219, 0.6)',
-                          borderColor: 'rgba(52, 152, 219, 1)',
-                          borderWidth: 1
-                      }]
-                  },
-                  options: {
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      scales: {
-                          y: {
-                              beginAtZero: true,
-                              title: {
-                                  display: true,
-                                  text: 'Número de Empleados'
-                              }
-                          },
-                          x: {
-                              title: {
-                                  display: true,
-                                  text: 'Desempeño Futuro'
-                              }
-                          }
-                      }
-                  }
-              });
-
-              // Chart 2: Empleados por Área (Bar Chart)
-              const employeesByAreaCounts = {};
-              data.forEach(item => {
-                  const area = item.area;
-                  employeesByAreaCounts[area] = (employeesByAreaCounts[area] || 0) + 1;
-              });
-              const employeesByAreaLabels = Object.keys(employeesByAreaCounts).sort();
-              const employeesByAreaData = employeesByAreaLabels.map(label => employeesByAreaCounts[label]);
-
-              window.employeesByAreaChartInstance = new Chart(document.getElementById('employeesByAreaChart'), {
-                  type: 'bar',
-                  data: {
-                      labels: employeesByAreaLabels,
-                      datasets: [{
-                          label: 'Número de Empleados',
-                          data: employeesByAreaData,
-                          backgroundColor: 'rgba(46, 204, 113, 0.6)',
-                          borderColor: 'rgba(46, 204, 113, 1)',
-                          borderWidth: 1
-                      }]
-                  },
-                  options: {
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      scales: {
-                          y: {
-                              beginAtZero: true,
-                              title: {
-                                  display: true,
-                                  text: 'Número de Empleados'
-                              }
-                          },
-                          x: {
-                              title: {
-                                  display: true,
-                                  text: 'Área'
-                              }
-                          }
-                      }
-                  }
-              });
-
-              // Chart 3: Distribución por Jerarquía (Pie Chart)
-              const hierarchyCounts = {};
-              data.forEach(item => {
-                  const jerarquia = item.jerarquia;
-                  hierarchyCounts[jerarquia] = (hierarchyCounts[jerarquia] || 0) + 1;
-              });
-              const hierarchyLabels = Object.keys(hierarchyCounts).sort();
-              const hierarchyData = hierarchyLabels.map(label => hierarchyCounts[label]);
-              const hierarchyColors = [
-                  'rgba(255, 99, 132, 0.6)',
-                  'rgba(54, 162, 235, 0.6)',
-                  'rgba(255, 206, 86, 0.6)',
-                  'rgba(75, 192, 192, 0.6)',
-                  'rgba(153, 102, 255, 0.6)',
-                  'rgba(255, 159, 64, 0.6)'
-              ];
-
-              window.hierarchyDistributionChartInstance = new Chart(document.getElementById('hierarchyDistributionChart'), {
-                  type: 'pie',
-                  data: {
-                      labels: hierarchyLabels,
-                      datasets: [{
-                          label: 'Distribución de Jerarquía',
-                          data: hierarchyData,
-                          backgroundColor: hierarchyLabels.map((_, i) => hierarchyColors[i % hierarchyColors.length]),
-                          borderColor: '#fff',
-                          borderWidth: 1
-                      }]
-                  },
-                  options: {
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      plugins: {
-                          legend: {
-                              position: 'top',
-                          },
-                          tooltip: {
-                              callbacks: {
-                                  label: function(context) {
-                                      let label = context.label || '';
-                                      if (label) {
-                                          label += ': ';
-                                      }
-                                      if (context.parsed !== null) {
-                                          label += context.parsed;
-                                      }
-                                      return label;
-                                  }
-                              }
-                          }
-                      }
-                  }
-              });
-
-          } catch (error) {
-              console.error('Error fetching or rendering charts:', error);
-              document.getElementById('charts-section').innerHTML = '<h2>Gráficos de Datos de Regresión</h2><p style="text-align: center; color: red;">Error al cargar los gráficos: ' + error.message + '</p>';
-          }
-      }
-
-      // Fetch and render charts when the page loads
-      document.addEventListener('DOMContentLoaded', fetchAndRenderCharts);
     </script>
   </body>
 </html>
