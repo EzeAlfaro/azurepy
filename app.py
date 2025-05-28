@@ -78,7 +78,7 @@ def index():
     return jsonify({
         "message": "Bienvenido a la API de predicción",
         "status": "OK",
-        "endpoints_disponibles": ["/health", "/api/predict/rotation", "/api/predict/performance_train", "/test", "/api/predict/future_performance", "/interfaz"]
+        "endpoints_disponibles": ["/health", "/api/predict/rotation", "/api/predict/performance_train", "/test", "/api/predict/future_performance", "/interfaz", "/api/data/regresion"] # Nuevo endpoint añadido aquí
     }), 200
 
 # --- Ruta de Salud ---
@@ -90,7 +90,8 @@ def health_check():
         "endpoints": {
             "kmeans": "/api/predict/rotation",
             "entrenar_regresion": "/api/predict/performance_train",
-            "future_performance": "/api/predict/future_performance"
+            "future_performance": "/api/predict/future_performance",
+            "get_regresion_data": "/api/data/regresion" # Nuevo endpoint añadido aquí
         }
     }), 200
 
@@ -257,6 +258,45 @@ def interfaz_page():
     html_content = html_content.replace('METABASE_IFRAME_URL_PLACEHOLDER', metabase_iframe_url)
 
     return render_template_string(html_content)
+
+# --- Nuevo endpoint para obtener datos de la tabla 'regresion' ---
+@app.route('/api/data/regresion', methods=['GET'])
+def get_regresion_data():
+    if ENABLE_AUTH:
+        try:
+            token = request.headers.get('Authorization', '').split(" ")[1]
+            auth.verify_id_token(token)
+        except Exception as e:
+            return jsonify({"error": f"Error de autenticación: {str(e)}"}), 401
+    else:
+        logging.info("Autenticación deshabilitada para /api/data/regresion")
+
+    conn = None
+    cursor = None
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        
+        # Consulta todos los datos de la tabla regresion
+        cursor.execute("SELECT id, nombre, area, jerarquia, desempenio, cantidad_proyectos, personas_equipo, horas_extra, desempenio_futuro, puntaje, asistencia_puntualidad FROM regresion")
+        
+        # Obtiene los nombres de las columnas para usarlos como claves en el diccionario
+        column_names = [desc[0] for desc in cursor.description]
+        
+        # Convierte los resultados a una lista de diccionarios
+        data = []
+        for row in cursor.fetchall():
+            data.append(dict(zip(column_names, row)))
+            
+        return jsonify(data), 200
+    except Exception as e:
+        logging.error(f"Error al obtener datos de la tabla regresion: {e}")
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
 # --- Ejecutar la app ---
 if __name__ == '__main__':
