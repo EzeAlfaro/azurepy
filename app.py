@@ -7,6 +7,7 @@ import os
 import json
 from config_postgres import get_connection
 from psycopg2.extras import execute_values
+from datetime import datetime
 import logging
 import jwt
 import time
