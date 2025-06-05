@@ -210,10 +210,10 @@ def predict_future_performance():
         # Ajustá los nombres y orden según tu tabla
         query = """
             INSERT INTO regresion
-            (nombre, area, jerarquia, desempenio, cantidad_proyectos, personas_equipo, horas_extra, desempenio_futuro, puntaje, asistencia_puntualidad)
+            (nombre, area, jerarquia, desempenio, cantidad_proyectos, personas_equipo, horas_extra, desempenio_futuro, puntaje, asistencia_puntualidad,fecha)
             VALUES %s
         """
-        
+        fecha_actual = datetime.now()
         valores = [
             (
                 d['nombre'],
@@ -225,7 +225,8 @@ def predict_future_performance():
                 bool(d['horas_extra']), #conversion directa a booleano
                 d['rendimiento_futuro'],
                 d['puntaje'],
-                d['asistencia_puntualidad']
+                d['asistencia_puntualidad'],
+                fecha_actual
             ) for d in datos
         ]
 
