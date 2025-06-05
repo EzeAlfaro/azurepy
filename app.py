@@ -204,9 +204,6 @@ def predict_future_performance():
         conn = get_connection()
         cursor = conn.cursor()
 
-        # borro los datos que estaban en la tabla regresion pra que quede la ultima predicción
-        cursor.execute("DELETE FROM regresion")
-
         # Asumiendo que cada dict en datos tiene las columnas: Nombre, AusenciasInjustificadas, etc.
         # Ajustá los nombres y orden según tu tabla
         query = """
