@@ -97,7 +97,7 @@ def health_check():
     }), 200
 
 # --- Función para ejecutar scripts ---
-def run_script(script_path, archivo_path=None):
+def run_script(script_path, archivo_path=None, columnas_excluir=None):
     try:
         command = ["python", script_path]
         if archivo_path:
@@ -179,6 +179,7 @@ def predict_performance():
             except json.JSONDecodeError:
                 return jsonify({"error": "El script no devolvió un JSON válido: " + output}), 500
         os.remove(archivo_temporal_path)
+        os.remove(archivo_columnas_path)
         return jsonify(output), 200
     except Exception as e:
         logging.error(f"Error al predecir el rendimiento futuro: {e}")
