@@ -155,8 +155,23 @@ def predict_performance():
         archivo_temporal_path = os.path.join(os.path.dirname(__file__), 'temp.csv')
         archivo_csv.save(archivo_temporal_path)
 
+        # Obtener columnas a excluir (campo opcional)
+        columnas_excluir = []
+        if 'excluir' in request.form:
+            try:
+                columnas_excluir = json.loads(request.form['excluir'])
+                if not isinstance(columnas_excluir, list):
+                    raise ValueError("Debe ser una lista JSON")
+            except Exception as e:
+                return jsonify({"error": f"Formato inválido en 'excluir': {e}"}), 400
+            
+        # Guardar columnas en archivo temporal JSON
+        archivo_columnas_path = os.path.join(os.path.dirname(__file__), 'temp_columnas.json')
+        with open(archivo_columnas_path, 'w') as f:
+            json.dump(columnas_excluir, f)
+
         script_path = os.path.join(os.path.dirname(__file__), "Regresion lineal", "regresion.py")
-        output = run_script(script_path, archivo_temporal_path)
+        output = run_script(script_path, archivo_temporal_path, archivo_columnas_path)
 
         if isinstance(output, str):
             try:

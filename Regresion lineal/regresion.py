@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 import pickle
 import json
 import os
@@ -18,41 +18,65 @@ ruta_modelo = os.path.join(os.path.dirname(__file__), "modelo_desempenio_futuro.
 
 #logging.info(f"Intentando cargar dataset desde: {ruta_entrenamiento}")  # Log
 
-def entrenar_modelo(archivo_csv):
+def entrenar_modelo(archivo_csv, columnas_excluir=None):
 
     try:
         df = pd.read_csv(archivo_csv, encoding="utf-8")
+        if columnas_excluir is None:
+            columnas_excluir = []
 
-        # --- Código original de Santi (sin caracteres especiales) ---
-        orden_desempeno = {'bajo': 0, 'medio': 1, 'alto': 2}  # Sin acento
-        df['desempenio_ordinal'] = df['desempenio'].map(orden_desempeno)
+        # 1. Eliminar columnas según el usuario
+        df = df.drop(columns=columnas_excluir, errors='ignore')
 
-        orden_jerarquia = {'trainee': 0, 'junior': 1, 'senior': 2}
-        df['jerarquia_ordinal'] = df['jerarquia'].map(orden_jerarquia)
+        # 2. Validaciones mínimas
+        if 'desempenio_futuro' not in df.columns:
+            return json.dumps({"error": "La columna 'desempenio_futuro' es obligatoria"})
 
-        df['horas_extra'] = df['horas_extra'].astype(int)
+            # 3. Transformaciones (solo si las columnas están)
+        if 'jerarquia' in df.columns:
+            orden_jerarquia = {'trainee': 0, 'junior': 1, 'senior': 2}
+            df['jerarquia_ordinal'] = df['jerarquia'].map(orden_jerarquia)
+
+        if 'horas_extra' in df.columns:
+            df['horas_extra'] = df['horas_extra'].astype(int)
 
         ohe = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
-        area_encoded = ohe.fit_transform(df[['area']])
-        area_encoded_df = pd.DataFrame(area_encoded, columns=ohe.get_feature_names_out(['area']), index=df.index)
+        if 'area' in df.columns:
+            area_encoded = ohe.fit_transform(df[['area']])
+            area_encoded_df = pd.DataFrame(area_encoded, columns=ohe.get_feature_names_out(['area']), index=df.index)
+            df = pd.concat([df.drop('area', axis=1), area_encoded_df], axis=1)
 
-        df_final = pd.concat([df.drop(['area', 'jerarquia', 'desempenio'], axis=1), area_encoded_df], axis=1)
+        if 'desempenio' in df.columns:
+            desempenio_encoded = ohe.fit_transform(df[['desempenio']])
+            desempenio_encoded_df = pd.DataFrame(desempenio_encoded, columns=ohe.get_feature_names_out(['desempenio']), index=df.index)
+            df = pd.concat([df.drop('desempenio', axis=1), desempenio_encoded_df], axis=1)
 
-        x = df_final.drop(['nombre', 'desempenio_futuro'], axis=1)
-        y = df_final['desempenio_futuro']
+        scaler = StandardScaler()
+
+        x = df.drop(['nombre', 'desempenio_futuro'], axis=1)
+        y = df['desempenio_futuro']
 
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=1)
+        x_train_scaled = scaler.fit_transform(x_train)
+        x_test_scaled = scaler.transform(x_test)
         model = LinearRegression()
-        model.fit(x_train, y_train)
+        model.fit(x_train_scaled, y_train)
+        coeficientes = dict(zip(x.columns, model.coef_))
+        lista_coeficientes = []
+        for col, val in coeficientes.items():
+            mensaje = f"Coeficiente para {col}: {val:.4f}"
+            logging.info(lista_coeficientes)
+            lista_coeficientes.append(mensaje)
 
         # Guardar modelo
         with open(ruta_modelo, 'wb') as archivo:
             pickle.dump({'modelo': model, 'columnas': list(x.columns), 'encoder': ohe}, archivo)
 
-        # Salida JSON
+            # Salida JSON
             resultados = {
-                "r2_score": f"{r2_score(y_test, model.predict(x_test))*100:.2f}%",
-                "status": "Modelo entrenado y guardado"
+                "r2_score": f"{r2_score(y_test, model.predict(x_test_scaled))*100:.2f}%",
+                "status": "Modelo entrenado y guardado",
+                "coeficientes": lista_coeficientes
             }
             return json.dumps(resultados)
     except FileNotFoundError as e:
@@ -63,9 +87,19 @@ def entrenar_modelo(archivo_csv):
         return json.dumps({"error": f"Ocurrió un error inesperado: {e}"})
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
+    if len(sys.argv) < 2:
         print("Error: Se debe proporcionar la ruta al archivo CSV como argumento.")
         sys.exit(1)
+
+    archivo_csv = sys.argv[1]
+    columnas = []
+
+    if len(sys.argv) >= 3:
+        with open(sys.argv[2], 'r') as f:
+            columnas = json.load(f)
+
+    resultado = entrenar_modelo(archivo_csv, columnas)
+    print(resultado)
 
 archivo_csv = sys.argv[1]
 resultado = entrenar_modelo(archivo_csv)
